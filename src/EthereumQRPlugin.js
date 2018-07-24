@@ -16,7 +16,7 @@ class EthereumQRPlugin {
    * @returns String
    */
   toAddressString(config) {
-    return this.produceEncodedValue(config)
+    return this.produceEncodedAmount(config)
   }
 
   /**
@@ -28,7 +28,7 @@ class EthereumQRPlugin {
    * @returns Promise
    */
   toCanvas(config, options) {
-    const generatedValue = this.produceEncodedValue(config, options)
+    const generatedAmount = this.produceEncodedAmount(config, options)
     const parentEl = document.querySelector(options.selector)
 
     if (!options.selector || parentEl === null) {
@@ -36,14 +36,14 @@ class EthereumQRPlugin {
     }
 
     return new Promise((resolve, reject) => {
-      QRCode.toCanvas(generatedValue, this.options, (err, canvas) => {
+      QRCode.toCanvas(generatedAmount, this.options, (err, canvas) => {
         if (err) return reject(err)
 
         parentEl.innerHTML = null
         parentEl.appendChild(canvas)
         canvas.setAttribute('style', `width: ${this.size}px`)
 
-        return resolve({ value: generatedValue })
+        return resolve({ amount: generatedAmount })
       })
     })
   }
@@ -57,15 +57,15 @@ class EthereumQRPlugin {
    * @returns Promise
    */
   toDataUrl(config, options) {
-    const generatedValue = this.produceEncodedValue(config, options)
+    const generatedAmount = this.produceEncodedAmount(config, options)
 
     return new Promise((resolve, reject) => {
-      QRCode.toDataURL(generatedValue, this.options, (err, url) => {
+      QRCode.toDataURL(generatedAmount, this.options, (err, url) => {
         if (err) reject(err)
 
         resolve({
           dataURL: url,
-          value: generatedValue,
+          amount: generatedAmount,
         })
       })
     })
@@ -74,23 +74,23 @@ class EthereumQRPlugin {
   /**
    * implements backwards transformation encode query string to JSON
    *
-   * @param {String} valueString
+   * @param {String} amountString
    */
-  readStringToJSON(valueString) { // eslint-disable-line class-methods-use-this
-    return decodeEthereumUri(valueString)
+  readStringToJSON(amountString) { // eslint-disable-line class-methods-use-this
+    return decodeEthereumUri(amountString)
   }
 
   getJSON() {
     return JSON.stringify(this.readStringToJSON())
   }
 
-  produceEncodedValue(config, options) {
-    this.assignPluguinValues(options)
+  produceEncodedAmount(config, options) {
+    this.assignPluguinAmounts(options)
 
     return encodeEthereumUri(config)
   }
 
-  assignPluguinValues(request = {}) {
+  assignPluguinAmounts(request = {}) {
     const { options, size, toJSON, imgUrl } = request
     const qrSize = parseInt(size, 10)
 

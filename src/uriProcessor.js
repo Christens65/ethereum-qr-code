@@ -25,10 +25,10 @@ export const uriModes = {
  */
 const isValidAddress = (address) => /^0x[0-9a-f]{40}$/i.test(address)
 
-const isValidEthValue = (value) => {
-  const ethWeiValue = new BigNumber(value)
+const isValidEthAmount = (amount) => {
+  const ethWeiAmount = new BigNumber(amount)
 
-  return ethWeiValue.isInteger() && ethWeiValue >= 0
+  return ethWeiAmount.isInteger() && ethWeiAmount >= 0
 }
 
 const isValidGasAmount = (gas) => Number.isInteger(gas) && gas >= 0
@@ -38,7 +38,7 @@ const isValidContractFunctionName = (str) => str.length > 0 && /^[a-z0-9\-_]*$/i
 const isValidSolidityType = (str) => str.length > 0 && /^[a-z0-9]*$/.test(str)
 const isValidFunctionArgumentName = (str) => str.length > 0 && /^[a-z0-9\-_]*$/i.test(str)
 
-const isValueDefined = (val) => val !== null && typeof val !== 'undefined'
+const isAmountDefined = (val) => val !== null && typeof val !== 'undefined'
 
 const isValidOptionalParam = (param, contentCheckFunc) => {
   const isNull = (param == null)
@@ -120,7 +120,7 @@ const validateArgsDefaults = (argsDefaults, functionArgs) => {
 
   if (argsDefaults.length === 0) {
     throw new Error(
-      '"argsDefaults" is an empty array. Do not use this property if you do not have default values'
+      '"argsDefaults" is an empty array. Do not use this prop if you do not have default amounts'
     )
   }
 
@@ -131,22 +131,22 @@ const validateArgsDefaults = (argsDefaults, functionArgs) => {
   }
 
   argsDefaults.forEach((argDefault) => {
-    validateAllowedProperties(argDefault, ['name', 'value'])
+    validateAllowedProperties(argDefault, ['name', 'amount'])
 
     if (isValidRequiredParam(argDefault.name, isValidFunctionArgumentName) === false) {
       throw new Error(`Invalid "name" of function argument in "argsDefaults": ${argDefault.name}`)
     }
 
-    if (isValueDefined(argDefault.value) === false) {
-      // we do not check arg value, out of the scope of this library
-      throw new Error(`Value of the function argument is not provided: ${argDefault.value}`)
+    if (isAmountDefined(argDefault.amount) === false) {
+      // we do not check arg amount, out of the scope of this library
+      throw new Error(`Amount of the function argument is not provided: ${argDefault.amount}`)
     }
 
     const matchedArg = functionArgs.find((arg) => arg.name === argDefault.name)
 
     if (matchedArg === null || typeof matchedArg === 'undefined') {
       throw new Error(
-        '"name" of the function argument with default value does not fit function signature: ' +
+        '"name" of the function argument with default amount does not fit function signature: ' +
         argDefault.name
       )
     }
@@ -154,7 +154,7 @@ const validateArgsDefaults = (argsDefaults, functionArgs) => {
 }
 
 const validateUriSchemaBasic = (data) => {
-  validateAllowedProperties(data, ['to', 'from', 'value', 'gas', 'chainId'])
+  validateAllowedProperties(data, ['to', 'from', 'amount', 'gas', 'chainId'])
 
   if (isValidRequiredParam(data.to, isValidAddress) === false) {
     throw new Error(`Property "to" is not an valid Ethereum address: ${data.to}`)
@@ -164,8 +164,8 @@ const validateUriSchemaBasic = (data) => {
     throw new Error(`Property "from" is not an valid Ethereum address: ${data.from}`)
   }
 
-  if (isValidOptionalParam(data.value, isValidEthValue) === false) {
-    throw new Error(`Property "value" is not an valid Ethereum amount: ${data.value}`)
+  if (isValidOptionalParam(data.amount, isValidEthAmount) === false) {
+    throw new Error(`Property "amount" is not an valid Ethereum amount: ${data.amount}`)
   }
 
   if (isValidOptionalParam(data.chainId, isValidChainId) === false) {
@@ -179,7 +179,7 @@ const validateUriSchemaBasic = (data) => {
 
 const validateUriSchemaFunction = (data) => {
   validateAllowedProperties(
-    data, ['to', 'from', 'value', 'gas', 'mode', 'chainId', 'functionSignature', 'argsDefaults']
+    data, ['to', 'from', 'amount', 'gas', 'mode', 'chainId', 'functionSignature', 'argsDefaults']
   )
 
   if (isValidRequiredParam(data.to, isValidAddress) === false) {
@@ -190,8 +190,8 @@ const validateUriSchemaFunction = (data) => {
     throw new Error(`Property "from" is not an valid Ethereum address: ${data.from}`)
   }
 
-  if (isValidOptionalParam(data.value, isValidEthValue) === false) {
-    throw new Error(`Property "value" is not an valid Ethereum amount: ${data.value}`)
+  if (isValidOptionalParam(data.amount, isValidEthAmount) === false) {
+    throw new Error(`Property "amount" is not an valid Ethereum amount: ${data.amount}`)
   }
 
   if (isValidOptionalParam(data.gas, isValidGasAmount) === false) {
@@ -206,13 +206,13 @@ const validateUriSchemaFunction = (data) => {
     throw new Error(`Chosen URI mode is not supported: ${data.mode}`)
   }
 
-  if (isValueDefined(data.functionSignature) === false) {
+  if (isAmountDefined(data.functionSignature) === false) {
     throw new Error('Property "functionSignature" is not defined')
   }
 
   validateFunctionSignature(data.functionSignature)
 
-  if (isValueDefined(data.argsDefaults)) {
+  if (isAmountDefined(data.argsDefaults)) {
     validateArgsDefaults(data.argsDefaults, data.functionSignature.args)
   }
 }
@@ -228,8 +228,8 @@ const validateUriSchemaERC20Transfer = (data) => {
     throw new Error(`Property "from" is not an valid Ethereum address: ${data.from}`)
   }
 
-  if (isValidOptionalParam(data.value, isValidEthValue) === false) {
-    throw new Error(`Property "value" is not an valid Ethereum amount: ${data.value}`)
+  if (isValidOptionalParam(data.amount, isValidEthAmount) === false) {
+    throw new Error(`Property "amount" is not an valid Ethereum amount: ${data.amount}`)
   }
 
   if (isValidOptionalParam(data.gas, isValidGasAmount) === false) {
@@ -244,10 +244,10 @@ const validateUriSchemaERC20Transfer = (data) => {
     throw new Error(`Chosen URI mode is not supported: ${data.mode}`)
   }
 
-  if (isValueDefined(data.argsDefaults)) {
+  if (isAmountDefined(data.argsDefaults)) {
     validateArgsDefaults(data.argsDefaults, [
       { name: 'to', type: 'address' },
-      { name: 'value', type: 'uint' },
+      { name: 'amount', type: 'uint' },
     ])
   }
 }
@@ -263,8 +263,8 @@ const validateUriSchemaERC20Approve = (data) => {
     throw new Error(`Property "from" is not an valid Ethereum address: ${data.from}`)
   }
 
-  if (isValidOptionalParam(data.value, isValidEthValue) === false) {
-    throw new Error(`Property "value" is not an valid Ethereum amount: ${data.value}`)
+  if (isValidOptionalParam(data.amount, isValidEthAmount) === false) {
+    throw new Error(`Property "amount" is not an valid Ethereum amount: ${data.amount}`)
   }
 
   if (isValidOptionalParam(data.gas, isValidGasAmount) === false) {
@@ -279,10 +279,10 @@ const validateUriSchemaERC20Approve = (data) => {
     throw new Error(`Chosen URI mode is not supported: ${data.mode}`)
   }
 
-  if (isValueDefined(data.argsDefaults)) {
+  if (isAmountDefined(data.argsDefaults)) {
     validateArgsDefaults(data.argsDefaults, [
       { name: 'spender', type: 'address' },
-      { name: 'value', type: 'uint' },
+      { name: 'amount', type: 'uint' },
     ])
   }
 }
@@ -298,8 +298,8 @@ const validateUriSchemaERC20TransferFrom = (data) => {
     throw new Error(`Property "from" is not an valid Ethereum address: ${data.from}`)
   }
 
-  if (isValidOptionalParam(data.value, isValidEthValue) === false) {
-    throw new Error(`Property "value" is not an valid Ethereum amount: ${data.value}`)
+  if (isValidOptionalParam(data.amount, isValidEthAmount) === false) {
+    throw new Error(`Property "amount" is not an valid Ethereum amount: ${data.amount}`)
   }
 
   if (isValidOptionalParam(data.gas, isValidGasAmount) === false) {
@@ -314,17 +314,17 @@ const validateUriSchemaERC20TransferFrom = (data) => {
     throw new Error(`Chosen URI mode is not supported: ${data.mode}`)
   }
 
-  if (isValueDefined(data.argsDefaults)) {
+  if (isAmountDefined(data.argsDefaults)) {
     validateArgsDefaults(data.argsDefaults, [
       { name: 'from', type: 'address' },
       { name: 'to', type: 'address' },
-      { name: 'value', type: 'uint' },
+      { name: 'amount', type: 'uint' },
     ])
   }
 }
 
 export const validateEthereumUri = (data) => {
-  if (isValueDefined(data.mode) === false) {
+  if (isAmountDefined(data.mode) === false) {
     return validateUriSchemaBasic(data)
   } else if (data.mode === uriModes.contractFunction) {
     return validateUriSchemaFunction(data)
@@ -343,13 +343,13 @@ export const validateEthereumUri = (data) => {
  * Encoders
  */
 const encodeEthSend = (data) => {
-  const { to, from, value, gas, chainId } = data
+  const { to, from, amount, gas, chainId } = data
 
   const params = {
-    from: isValueDefined(from) ? from : null,
-    value: isValueDefined(value) ? new BigNumber(value).toString(10) : null,
-    gas: isValueDefined(gas) ? gas : null,
-    chainId: (isValueDefined(chainId) && isValidChainId(chainId)) ? chainId : null,
+    from: isAmountDefined(from) ? from : null,
+    amount: isAmountDefined(amount) ? new BigNumber(amount).toString(10) : null,
+    gas: isAmountDefined(gas) ? gas : null,
+    chainId: (isAmountDefined(chainId) && isValidChainId(chainId)) ? chainId : null,
   }
 
   const paramsStr = Object
@@ -364,7 +364,7 @@ const encodeEthSend = (data) => {
 export const encodeEthereumUri = (data) => {
   validateEthereumUri(data) // throws if data has wrong format
 
-  if (isValueDefined(data.mode) === false) {
+  if (isAmountDefined(data.mode) === false) {
     return encodeEthSend(data)
   }
 
@@ -377,23 +377,23 @@ export const encodeEthereumUri = (data) => {
 const decodeEthSend = (encodedStr) => {
   const addressBlockParams = {
     gas: {
-      convert(value) {
-        return parseInt(value, 10)
+      convert(amount) {
+        return parseInt(amount, 10)
       },
     },
-    value: {
-      convert(value) {
-        return new BigNumber(value).toString(10)
+    amount: {
+      convert(amount) {
+        return new BigNumber(amount).toString(10)
       },
     },
     from: {
-      convert(value) {
-        return value
+      convert(amount) {
+        return amount
       },
     },
     chainId: {
-      convert(value) {
-        return parseInt(value, 10)
+      convert(amount) {
+        return parseInt(amount, 10)
       },
     },
   }

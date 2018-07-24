@@ -5,7 +5,7 @@ global.describe('URI for ETH send', () => {
   const getValidUriData = () => ({
     to: '0xf661e08b763d4906457d54c302669ec5e8a24e37',
     from: '0xfbb1b73c4f0bda4f67dca266ce6ef42f520fbb98',
-    value: '10000000',
+    amount: '10000000',
     gas: 21000,
   });
 
@@ -17,7 +17,7 @@ global.describe('URI for ETH send', () => {
     const testObj = getValidUriData();
 
     delete testObj.from;
-    delete testObj.value;
+    delete testObj.amount;
     delete testObj.gas;
 
     global.expect(validateEthereumUri(testObj)).toEqual(undefined);
@@ -65,21 +65,21 @@ global.describe('URI for ETH send', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
   });
 
-  global.it('should not accept wrong ETH "value"', () => {
+  global.it('should not accept wrong ETH "amount"', () => {
     let testObj = getValidUriData();
-    testObj.value = 1.1;
+    testObj.amount = 1.1;
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = -1;
+    testObj.amount = -1;
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = 'abc';
+    testObj.amount = 'abc';
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = '';
+    testObj.amount = '';
     global.expect(() => validateEthereumUri(testObj)).toThrow();
   });
 
@@ -127,11 +127,11 @@ global.describe('URI for ETH send', () => {
 
   global.it('should handle big number correctly', () => {
     let testObj = getValidUriData();
-    testObj.value = '1000000000000000000000';
+    testObj.amount = '1000000000000000000000';
     global.expect(validateEthereumUri(testObj)).toEqual(undefined);
 
     testObj = getValidUriData();
-    testObj.value = '100000034000000505000000';
+    testObj.amount = '100000034000000505000000';
     global.expect(validateEthereumUri(testObj)).toEqual(undefined);
   });
 });
@@ -142,7 +142,7 @@ global.describe('URI for invocation of a function', () => {
   const getValidUriData = () => ({
     to: '0xf661e08b763d4906457d54c302669ec5e8a24e37',
     from: '0xfbb1b73c4f0bda4f67dca266ce6ef42f520fbb98',
-    value: '0',
+    amount: '0',
     gas: 100000,
     mode: 'contract_function',
     functionSignature: {
@@ -150,12 +150,12 @@ global.describe('URI for invocation of a function', () => {
       payable: false,
       args: [
         { name: 'to', type: 'address' },
-        { name: 'value', type: 'uint' },
+        { name: 'amount', type: 'uint' },
       ],
     },
     argsDefaults: [
-      { name: 'to', value: '0xtokensrecipient' },
-      { name: 'value', value: 1000000000000000000 },
+      { name: 'to', amount: '0xtokensrecipient' },
+      { name: 'amount', amount: 1000000000000000000 },
     ],
   });
 
@@ -167,7 +167,7 @@ global.describe('URI for invocation of a function', () => {
     const testObj = getValidUriData();
 
     delete testObj.from;
-    delete testObj.value;
+    delete testObj.amount;
     delete testObj.gas;
     delete testObj.functionSignature.args;
     delete testObj.argsDefaults;
@@ -217,21 +217,21 @@ global.describe('URI for invocation of a function', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
   });
 
-  global.it('should not accept wrong ETH "value"', () => {
+  global.it('should not accept wrong ETH "amount"', () => {
     let testObj = getValidUriData();
-    testObj.value = 1.1;
+    testObj.amount = 1.1;
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = -1;
+    testObj.amount = -1;
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = 'abc';
+    testObj.amount = 'abc';
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = '';
+    testObj.amount = '';
     global.expect(() => validateEthereumUri(testObj)).toThrow();
   });
 
@@ -373,7 +373,7 @@ global.describe('URI for invocation of a function', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.argsDefaults = [{ value: 'test' }];
+    testObj.argsDefaults = [{ amount: 'test' }];
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
@@ -381,8 +381,8 @@ global.describe('URI for invocation of a function', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.argsDefaults[0].value = '*^&^$';
-    global.expect(validateEthereumUri(testObj)).toEqual(undefined); // should accept any value
+    testObj.argsDefaults[0].amount = '*^&^$';
+    global.expect(validateEthereumUri(testObj)).toEqual(undefined); // should accept any amount
   });
 });
 
@@ -394,8 +394,8 @@ global.describe('URI for ERC20 Transfer', () => {
     gas: 100000,
     mode: 'erc20__transfer',
     argsDefaults: [
-      { name: 'to', value: '0xtokensrecipient' },
-      { name: 'value', value: 1000000000000000000 },
+      { name: 'to', amount: '0xtokensrecipient' },
+      { name: 'amount', amount: 1000000000000000000 },
     ],
   });
 
@@ -407,7 +407,7 @@ global.describe('URI for ERC20 Transfer', () => {
     const testObj = getValidUriData();
 
     delete testObj.from;
-    delete testObj.value;
+    delete testObj.amount;
     delete testObj.gas;
     delete testObj.argsDefaults;
 
@@ -456,21 +456,21 @@ global.describe('URI for ERC20 Transfer', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
   });
 
-  global.it('should not accept wrong ETH "value"', () => {
+  global.it('should not accept wrong ETH "amount"', () => {
     let testObj = getValidUriData();
-    testObj.value = 1.1;
+    testObj.amount = 1.1;
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = -1;
+    testObj.amount = -1;
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = 'abc';
+    testObj.amount = 'abc';
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = '';
+    testObj.amount = '';
     global.expect(() => validateEthereumUri(testObj)).toThrow();
   });
 
@@ -532,7 +532,7 @@ global.describe('URI for ERC20 Transfer', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.argsDefaults = [{ value: 'test' }];
+    testObj.argsDefaults = [{ amount: 'test' }];
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
@@ -540,8 +540,8 @@ global.describe('URI for ERC20 Transfer', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.argsDefaults[0].value = '*^&^$';
-    global.expect(validateEthereumUri(testObj)).toEqual(undefined); // should accept any value
+    testObj.argsDefaults[0].amount = '*^&^$';
+    global.expect(validateEthereumUri(testObj)).toEqual(undefined); // should accept any amount
   });
 });
 
@@ -553,8 +553,8 @@ global.describe('URI for ERC20 Approve', () => {
     gas: 100000,
     mode: 'erc20__approve',
     argsDefaults: [
-      { name: 'spender', value: '0xtokensrecipient' },
-      { name: 'value', value: 1000000000000000000 },
+      { name: 'spender', amount: '0xtokensrecipient' },
+      { name: 'amount', amount: 1000000000000000000 },
     ],
   });
 
@@ -566,7 +566,7 @@ global.describe('URI for ERC20 Approve', () => {
     const testObj = getValidUriData();
 
     delete testObj.from;
-    delete testObj.value;
+    delete testObj.amount;
     delete testObj.gas;
     delete testObj.argsDefaults;
 
@@ -615,21 +615,21 @@ global.describe('URI for ERC20 Approve', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
   });
 
-  global.it('should not accept wrong ETH "value"', () => {
+  global.it('should not accept wrong ETH "amount"', () => {
     let testObj = getValidUriData();
-    testObj.value = 1.1;
+    testObj.amount = 1.1;
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = -1;
+    testObj.amount = -1;
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = 'abc';
+    testObj.amount = 'abc';
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = '';
+    testObj.amount = '';
     global.expect(() => validateEthereumUri(testObj)).toThrow();
   });
 
@@ -691,7 +691,7 @@ global.describe('URI for ERC20 Approve', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.argsDefaults = [{ value: 'test' }];
+    testObj.argsDefaults = [{ amount: 'test' }];
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
@@ -699,8 +699,8 @@ global.describe('URI for ERC20 Approve', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.argsDefaults[0].value = '*^&^$';
-    global.expect(validateEthereumUri(testObj)).toEqual(undefined); // should accept any value
+    testObj.argsDefaults[0].amount = '*^&^$';
+    global.expect(validateEthereumUri(testObj)).toEqual(undefined); // should accept any amount
   });
 });
 
@@ -712,9 +712,9 @@ global.describe('URI for ERC20 TransferFrom', () => {
     gas: 100000,
     mode: 'erc20__transferFrom',
     argsDefaults: [
-      { name: 'from', value: '0xaddress1' },
-      { name: 'to', value: '0xaddress2' },
-      { name: 'value', value: 1000000000000000000 },
+      { name: 'from', amount: '0xaddress1' },
+      { name: 'to', amount: '0xaddress2' },
+      { name: 'amount', amount: 1000000000000000000 },
     ],
   });
 
@@ -726,7 +726,7 @@ global.describe('URI for ERC20 TransferFrom', () => {
     const testObj = getValidUriData();
 
     delete testObj.from;
-    delete testObj.value;
+    delete testObj.amount;
     delete testObj.gas;
     delete testObj.argsDefaults;
 
@@ -775,21 +775,21 @@ global.describe('URI for ERC20 TransferFrom', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
   });
 
-  global.it('should not accept wrong ETH "value"', () => {
+  global.it('should not accept wrong ETH "amount"', () => {
     let testObj = getValidUriData();
-    testObj.value = 1.1;
+    testObj.amount = 1.1;
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = -1;
+    testObj.amount = -1;
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = 'abc';
+    testObj.amount = 'abc';
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.value = '';
+    testObj.amount = '';
     global.expect(() => validateEthereumUri(testObj)).toThrow();
   });
 
@@ -851,7 +851,7 @@ global.describe('URI for ERC20 TransferFrom', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.argsDefaults = [{ value: 'test' }];
+    testObj.argsDefaults = [{ amount: 'test' }];
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
@@ -859,8 +859,8 @@ global.describe('URI for ERC20 TransferFrom', () => {
     global.expect(() => validateEthereumUri(testObj)).toThrow();
 
     testObj = getValidUriData();
-    testObj.argsDefaults[0].value = '*^&^$';
-    global.expect(validateEthereumUri(testObj)).toEqual(undefined); // should accept any value
+    testObj.argsDefaults[0].amount = '*^&^$';
+    global.expect(validateEthereumUri(testObj)).toEqual(undefined); // should accept any amount
   });
 });
 
@@ -869,14 +869,14 @@ global.describe('Encode URI for ETH send', () => {
   const getValidUriData = () => ({
     to: '0xf661e08b763d4906457d54c302669ec5e8a24e37',
     from: '0xfbb1b73c4f0bda4f67dca266ce6ef42f520fbb98',
-    value: '10000000',
+    amount: '10000000',
     gas: 21000,
   });
 
   global.it('should encode valid data', () => {
     global.expect(encodeEthereumUri(getValidUriData()))
       .toEqual(
-        'ethereum:0xf661e08b763d4906457d54c302669ec5e8a24e37?from=0xfbb1b73c4f0bda4f67dca266ce6ef42f520fbb98&value=10000000&gas=21000');
+        'ethereum:0xf661e08b763d4906457d54c302669ec5e8a24e37?from=0xfbb1b73c4f0bda4f67dca266ce6ef42f520fbb98&amount=10000000&gas=21000');
   });
 
   global.it('should decode valid data', () => {
@@ -890,7 +890,7 @@ global.describe('Encode URI for invocation of a function', () => {
   const getValidUriData = () => ({
     to: '0xf661e08b763d4906457d54c302669ec5e8a24e37',
     from: '0xfbb1b73c4f0bda4f67dca266ce6ef42f520fbb98',
-    value: '10000000',
+    amount: '10000000',
     gas: 100000,
     mode: 'contract_function',
     functionSignature: {
@@ -898,12 +898,12 @@ global.describe('Encode URI for invocation of a function', () => {
       payable: false,
       args: [
         { name: 'to', type: 'address' },
-        { name: 'value', type: 'uint' },
+        { name: 'amount', type: 'uint' },
       ],
     },
     argsDefaults: [
-      { name: 'to', value: '0xtokensrecipient' },
-      { name: 'value', value: 1000000000000000000 },
+      { name: 'to', amount: '0xtokensrecipient' },
+      { name: 'amount', amount: 1000000000000000000 },
     ],
   });
 
@@ -921,8 +921,8 @@ global.describe('Encode URI for ERC20 Transfer', () => {
     gas: 100000,
     mode: 'erc20__transfer',
     argsDefaults: [
-      { name: 'to', value: '0xtokensrecipient' },
-      { name: 'value', value: 1000000000000000000 },
+      { name: 'to', amount: '0xtokensrecipient' },
+      { name: 'amount', amount: 1000000000000000000 },
     ],
   });
 
@@ -940,8 +940,8 @@ global.describe('Encode URI for ERC20 Approve', () => {
     gas: 100000,
     mode: 'erc20__approve',
     argsDefaults: [
-      { name: 'spender', value: '0xtokensrecipient' },
-      { name: 'value', value: 1000000000000000000 },
+      { name: 'spender', amount: '0xtokensrecipient' },
+      { name: 'amount', amount: 1000000000000000000 },
     ],
   });
 
@@ -959,9 +959,9 @@ global.describe('Encode URI for ERC20 TransferFrom', () => {
     gas: 100000,
     mode: 'erc20__transferFrom',
     argsDefaults: [
-      { name: 'from', value: '0xaddress1' },
-      { name: 'to', value: '0xaddress2' },
-      { name: 'value', value: 1000000000000000000 },
+      { name: 'from', amount: '0xaddress1' },
+      { name: 'to', amount: '0xaddress2' },
+      { name: 'amount', amount: 1000000000000000000 },
     ],
   });
 

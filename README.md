@@ -1,3 +1,25 @@
+# About the fork
+
+This is a fork of [ethereum-qr-code](https://github.com/jibrelnetwork/ethereum-qr-code) to replace the field named `value` with `amount`.
+
+This is the reason:
+
+Even though the original package is based on [EIP67](https://github.com/ethereum/EIPs/issues/67), actual usage of the QR protocol is currently **very fractured** and gives different and unexpected results based on which wallet the user uses.
+
+Some problems we have found with some Ethereum wallets:
+
+- *imToken*, *BRD wallet*, *Lykke* require a QR field: `amount` to be `ETH`
+
+- *Trust wallet* requires a QR field: `amount` to be `wei` instead of ETH!
+
+- *Toshi wallet* crashes on QR code scan (at time of writing 2018-07-24)
+
+- None of the wallets we tried use the `value` field...
+
+For now we have forked the package here and changed the field called `value` to `amount`.
+
+Original Readme:
+
 # Ethereum Address QR Code Generator
 
 This plugin provides a convenient way to generate an [ethereum address link out of the provided parameters based on EIP67](https://github.com/ethereum/EIPs/issues/67).
@@ -147,7 +169,7 @@ These are the only parameters needed for this use-case.
 
 For the other use-cases, the `mode` field allows for defining the structure of the resulting JSON. The URI scheme to invoke the contract's function uses JSON to encode the parameters specified.
 
-Possible inputs for the `mode` field: 
+Possible inputs for the `mode` field:
 - `contract_function`
 - `erc20__transfer`
 - `erc20__approve`
@@ -216,7 +238,7 @@ Parameters:
 
     2. `payable` | Boolean | **required** - Defines whether function is able to receive ETH or not. (`value` should be zero if `false`)
 
-    3. `args` | Array | **optional** - Contains list of function`s arguments. If this parameter is present - it must contain at least one element. If this parameter is not present - we assume that function do not have arguments. 
+    3. `args` | Array | **optional** - Contains list of function`s arguments. If this parameter is present - it must contain at least one element. If this parameter is not present - we assume that function do not have arguments.
 
         1. `type` | String | **required** - Type of the argument: `uint`, `uint8`, `int32`, `address`, `bool` and so on.
 
@@ -225,7 +247,7 @@ Parameters:
         But QR codes are used to pass tx details between different wallets and GUI must be nice.
         Therefore unnamed input fields in GUI are not possible. Therefore this parameter is required.
 
- 8. `argsDefaults` | Array | optional - Array with default values for function arguments. If this parameter is present - it must contain at least one element. We do not require to provide defaults of all args. 
+ 8. `argsDefaults` | Array | optional - Array with default values for function arguments. If this parameter is present - it must contain at least one element. We do not require to provide defaults of all args.
 
     1. `name` | String | **required** - Name of the argument. Should be equal to the name of one of arguments from `functionSignature`
 
@@ -303,6 +325,6 @@ Or follow us on Twitter: [@JibrelNetwork](https://twitter.com/JibrelNetwork).
 
 If you have a proposal, feature request, or are having trouble running the plugin,  please [submit an issue](https://github.com/jibrelnetwork/ethereum-qr-code/issues).
 
-## License 
+## License
 
 [MIT](LICENSE.md)
