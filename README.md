@@ -2,6 +2,8 @@
 
 This is a fork of [ethereum-qr-code](https://github.com/jibrelnetwork/ethereum-qr-code) to replace the field named `value` with `amount`.
 
+Install fork with `npm i @dri/ethereum-qr-code`
+
 This is the reason:
 
 Even though the original package is based on [EIP67](https://github.com/ethereum/EIPs/issues/67), actual usage of the QR protocol is currently **very fractured** and gives different and unexpected results based on which wallet the user uses.
